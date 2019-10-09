@@ -4,7 +4,9 @@
 
 ## October 2019
 
-## Added to CitHub - October 8th 2019
+## Added to GitHub - October 8th 2019
+
+## October9 Branch Created
 
 ##
 
@@ -34,7 +36,6 @@ def MainProg_CATwo():
 	# Set PyCharm Display Option 
 	# This is done to improve console display
 	# for use in documentented screen shots
-
 	desired_width=320
 	pd.set_option('display.width', 400)
 	np.set_printoptions(linewidth=10)
@@ -43,14 +44,14 @@ def MainProg_CATwo():
 
 	# Identify file to be read into dataset
 	filename = "Spruce.csv"
+	# Set up file identifier for use in Console Print statements
 	dataDescription = "Spruce Dataset"
 
 	# Read CSV file and return dataset
 	df_spruce = ReadDataframe(filename)
 
-	# Display some basic initial statistic from dataset
-	# This data will be used to inform follow up data
-	# cleansing actions
+	# Display some basic initial statistics about dataset
+	# This data will be used to inform follow up data cleansing actions
 	DisplayBasicDataFrameInfo(df_spruce, dataDescription)
 
 	df_FinalSpruce = PreSplitDataManipulation(df_spruce, dataDescription)
@@ -103,7 +104,6 @@ def ReadDataframe(filename):
 	# Read CSV file into panda dataframe
 	df = pd.read_csv(filename)
 
-	
 	# Return the panda dataframe read in from the CSV file
 	return df 
 
@@ -137,12 +137,16 @@ def PreSplitDataManipulation(dataset, datasetDescription):
 	# Pause
 	#anykey = input("Press any key..")
 
+	# Check for Duplicates
+	numOfDuplicatedRows = dataset.duplicated().value_counts()
+	print("\n\t{} Dataset Checking for duplicate Rows :\n".format(datasetDescription))
+	print("\t\tNumber of duplicate Rows in {} dataset : \n".format(numOfDuplicatedRows))
+
 
 	# Converting Categorical features into Numerical features - most algorithms need numeric values
 	# Just one column - the 'Tree Type' needs to be converted from a Categorical Values
 	# This is the target variable and a 'Spruce' is assigned a value of '1', and 'Other' is assigned 
 	# a value of '0' 
-
 	dataset['Tree_Type'] = dataset['Tree_Type'].apply(ConvertTreeType)
 	final_data = dataset
 	
