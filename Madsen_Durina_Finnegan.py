@@ -4,7 +4,9 @@
 
 ## October 2019
 
-## Added to CitHub - October 8th 2019
+## Added to GitHub - October 8th 2019
+
+## October9 Branch Created
 
 ##
 
@@ -34,7 +36,6 @@ def MainProg_CATwo():
 	# Set PyCharm Display Option 
 	# This is done to improve console display
 	# for use in documentented screen shots
-
 	desired_width=320
 	pd.set_option('display.width', 400)
 	np.set_printoptions(linewidth=10)
@@ -43,14 +44,14 @@ def MainProg_CATwo():
 
 	# Identify file to be read into dataset
 	filename = "Spruce.csv"
+	# Set up file identifier for use in Console Print statements
 	dataDescription = "Spruce Dataset"
 
 	# Read CSV file and return dataset
 	df_spruce = ReadDataframe(filename)
 
-	# Display some basic initial statistic from dataset
-	# This data will be used to inform follow up data
-	# cleansing actions
+	# Display some basic initial statistics about dataset
+	# This data will be used to inform follow up data cleansing actions
 	DisplayBasicDataFrameInfo(df_spruce, dataDescription)
 
 	df_FinalSpruce = PreSplitDataManipulation(df_spruce, dataDescription)
@@ -76,7 +77,7 @@ def MainProg_CATwo():
 	ImplementTunedRandomForestAlgorithm(X_train, X_test, Y_train, Y_test, best_estimator, X)
 
 
-	### ---- Implement PCA Visualisation and K-Means Clustering 
+	### ---- Implement PCA Visualisation and K-Means Clustering
 	x_pca = ImplementPCAVisualisation(X_Scaled, Y, dataDescription)
 
 	ImplementK_MeansClustering(X_Scaled, x_pca, dataDescription)
@@ -103,7 +104,6 @@ def ReadDataframe(filename):
 	# Read CSV file into panda dataframe
 	df = pd.read_csv(filename)
 
-	
 	# Return the panda dataframe read in from the CSV file
 	return df 
 
@@ -133,29 +133,38 @@ def ConvertTreeType(column):
 def PreSplitDataManipulation(dataset, datasetDescription):
 
 	# Check for Null Values
-	print("\n{} Dataset Checking for Null Values : {}\n".format(datasetDescription, dataset.isnull().values.any()))
+	print("\n\tChecking for Null Values in {} Dataset - Result : {}\n".format(datasetDescription, dataset.isnull().values.any()))
 	# Pause
-	#anykey = input("Press any key..")
+	anykey = input("\nPress any key..")
 
+	# Check for Duplicates
+	numOfDuplicatedRows = dataset.duplicated().value_counts()
+	print("\n\tChecking for Duplicate Rows in {} Dataset - Result : {}\n\n".format(datasetDescription, numOfDuplicatedRows))
+	# Pause
+	anykey = input("\nPress any key..")
 
 	# Converting Categorical features into Numerical features - most algorithms need numeric values
 	# Just one column - the 'Tree Type' needs to be converted from a Categorical Values
 	# This is the target variable and a 'Spruce' is assigned a value of '1', and 'Other' is assigned 
 	# a value of '0' 
+	# Display the first two rows after conversion of 'Tree Type'
+	print("\nCategorical {} Dataset Head Rows Prior to Tree Type conversion : \n".format(datasetDescription))
+	print(dataset.head(2))
 
 	dataset['Tree_Type'] = dataset['Tree_Type'].apply(ConvertTreeType)
 	final_data = dataset
-	
 
 	# Display the first two rows after conversion of 'Tree Type'
 	print("\nConverted Categorical {} Dataset Head Rows : \n".format(datasetDescription))
 	print(final_data.head(2))
+	# Pause
+	anykey = input("Press any key..")
 
 	# Display the change in datatype for 'Tree Type'
 	print("\nConverted Categorical {} Dataset Datatypes : \n".format(datasetDescription))
 	print(final_data.dtypes)
 	# Pause
-	#anykey = input("Press any key..")
+	anykey = input("Press any key..")
 
 
 	# Pre-Split Data Preparation
@@ -171,23 +180,28 @@ def PreSplitDataManipulation(dataset, datasetDescription):
 		print("\n\t# zero value rows in column {1}: {0}".format(len(final_data.loc[final_data[feature] == 0]),feature))
 	
 	# Pause
-	#anykey = input("Press any key..")
+	anykey = input("Press any key..")
 
 	# Drop rows?
 
 	# Check for Correlation after all features converted to numeric
-	# CheckDatasetForCorrelation(final_data, datasetDescription)
+	CheckDatasetForCorrelation(final_data, datasetDescription)
 
 
 	return final_data
 
+
+
+
 def CheckDatasetForCorrelation(dataset, dataDescription):
 
-	print("\nCheck {} Dataset For any Correlation between features (Categorical features converted into Numerics): \n".format(dataDescription))
-	print(dataset.corr())
+	print("\n\tCheck {} Dataset For any Correlation between features (Categorical features converted into Numerics): \n".format(dataDescription))
 
+	# Correlation analysis - a graphical representation of possible correlation of data
+	sns.heatmap(dataset.corr(), annot=True, fmt='.2f')
 	# Pause
-	# anykey = input("Press any key..")
+	anykey = input("Press any key..")
+
 
 
 	
