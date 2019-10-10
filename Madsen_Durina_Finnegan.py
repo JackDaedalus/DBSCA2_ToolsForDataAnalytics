@@ -135,13 +135,13 @@ def PreSplitDataManipulation(dataset, datasetDescription):
 	# Check for Null Values
 	print("\n\tChecking for Null Values in {} Dataset - Result : {}\n".format(datasetDescription, dataset.isnull().values.any()))
 	# Pause
-	anykey = input("\nPress any key..")
+	#anykey = input("\nPress any key..")
 
 	# Check for Duplicates
 	numOfDuplicatedRows = dataset.duplicated().value_counts()
 	print("\n\tChecking for Duplicate Rows in {} Dataset - Result : {}\n\n".format(datasetDescription, numOfDuplicatedRows))
 	# Pause
-	anykey = input("\nPress any key..")
+	#anykey = input("\nPress any key..")
 
 	# Converting Categorical features into Numerical features - most algorithms need numeric values
 	# Just one column - the 'Tree Type' needs to be converted from a Categorical Values
@@ -158,13 +158,13 @@ def PreSplitDataManipulation(dataset, datasetDescription):
 	print("\nConverted Categorical {} Dataset Head Rows : \n".format(datasetDescription))
 	print(final_data.head(2))
 	# Pause
-	anykey = input("Press any key..")
+	#anykey = input("Press any key..")
 
 	# Display the change in datatype for 'Tree Type'
 	print("\nConverted Categorical {} Dataset Datatypes : \n".format(datasetDescription))
 	print(final_data.dtypes)
 	# Pause
-	anykey = input("Press any key..")
+	#anykey = input("Press any key..")
 
 
 	# Pre-Split Data Preparation
@@ -180,9 +180,8 @@ def PreSplitDataManipulation(dataset, datasetDescription):
 		print("\n\t# zero value rows in column {1}: {0}".format(len(final_data.loc[final_data[feature] == 0]),feature))
 	
 	# Pause
-	anykey = input("Press any key..")
+	#anykey = input("Press any key..")
 
-	# Drop rows?
 
 	# Check for Correlation after all features converted to numeric
 	CheckDatasetForCorrelation(final_data, datasetDescription)
@@ -200,7 +199,7 @@ def CheckDatasetForCorrelation(dataset, dataDescription):
 	# Correlation analysis - a graphical representation of possible correlation of data
 	sns.heatmap(dataset.corr(), annot=True, fmt='.2f')
 	# Pause
-	anykey = input("Press any key..")
+	#anykey = input("Press any key..")
 
 
 
@@ -334,7 +333,7 @@ def TuneRandomForestAlgorithm(X_train, Y_train):
 		#print(best_result)
 
 	# Pause
-	anykey = input("Press any key..")
+	#anykey = input("Press any key..")
 
 
 def ImplementTunedRandomForestAlgorithm(X_train, X_test, Y_train, Y_test, best_estimator, X):
@@ -368,7 +367,7 @@ def ImplementTunedRandomForestAlgorithm(X_train, X_test, Y_train, Y_test, best_e
 
 	conf_mat = metrics.confusion_matrix(Y_test, Y_pred)
 	plt.figure(figsize=(8,6))
-	sns.heatmap(conf_mat,annot=True)
+	sns.heatmap(conf_mat,annot=True,cmap='Reds', fmt='d')
 	plt.title("Confusion_matrix")
 	plt.xlabel("Predicted Class")
 	plt.ylabel("Actual class")
