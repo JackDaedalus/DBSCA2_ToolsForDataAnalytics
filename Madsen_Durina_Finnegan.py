@@ -4,9 +4,11 @@
 
 ## October 2019
 
-## Added to GitHub - October 8th 2019
+## Dermot Madsen - 10522567
+## Radoslav Durina - 10524378
+## Ciaran Finnegan - 10524150
 
-## October9 Branch Created
+## Added to GitHub - October 8th 2019
 
 ##
 
@@ -54,30 +56,51 @@ def MainProg_CATwo():
 	# This data will be used to inform follow up data cleansing actions
 	DisplayBasicDataFrameInfo(df_spruce, dataDescription)
 
+	# Perform checks on the data for possible changes the analyts should make
+	# Change the categorical data features into numeric
+	# Check levels of correlation
 	df_FinalSpruce = PreSplitDataManipulation(df_spruce, dataDescription)
 
+	# Dividing dataset into label and feature sets
 	X, Y = CreateLableAndFeatureSet(df_FinalSpruce, dataDescription)
 
+	# Dividing dataset into training and test sets
+	# This function begins with a normalisation routine and then also implements
+	# oversampling after the data split has been carried out
 	X_train, X_test, Y_train, Y_test, X_Scaled = CreateTrainingAndTestData(X, Y, dataDescription, df_FinalSpruce)
 
+	# Use CrossValidation routine to provide the analyst with parameters to tune the model
+	# by determining the best 'n_estimator' score that fits with our analysis strategy
 	#TuneRandomForestAlgorithm(X_train, Y_train)
 
 	# Determined by algorithm tuning process
+	# This value is designed to reduce 'False Negatives' - in line with the objectives 
+	# of our analysis strategy.
 	best_estimator = 550
 
+	# Call RandomForest with full Spruce data Feature Set
+	# Output results to both console and in graphical form
+	# 
 	ImplementTunedRandomForestAlgorithm(X_train, X_test, Y_train, Y_test, best_estimator, X)
 
+	# The previous function provides the analyst with the Spruce dataset featurs lists in 
+	# order of significance to the model. Using this list a redefined sub list of features 
+	# is used to create a new dataset
 	X = CreateRevisedFeatureSet(X)
 
-	## --- Rinse / Repeat ##
+	# Using the dataset with the redefined Feature Set create new training and test sets
+	# This function is the same as the one called earlier in the main program and includes
+	# Scaling and Oversampling routines
 	X_train, X_test, Y_train, Y_test, X_Scaled = CreateTrainingAndTestData(X, Y, dataDescription, df_FinalSpruce)
-	#####
+	
 
-	# ---- Call RandomForest with revised FeatureSet
+	# Call RandomForest with revised FeatureSet
+	# Output results to both console and in graphical form
 	ImplementTunedRandomForestAlgorithm(X_train, X_test, Y_train, Y_test, best_estimator, X)
 
 
-	### ---- Implement PCA Visualisation and K-Means Clustering
+	# Implement PCA Visualisation and K-Means Clustering
+	# Results are output to both the console and in graphical form
 	x_pca = ImplementPCAVisualisation(X_Scaled, Y, dataDescription)
 
 	ImplementK_MeansClustering(X_Scaled, x_pca, dataDescription)
@@ -86,6 +109,9 @@ def MainProg_CATwo():
 
 def CreateTrainingAndTestData(X, Y, dataDescription, origDataset):
 
+	# Normalizing numerical features so that each feature has mean 0 and variance 1
+	# This standarisation of the data avoids features with large data ranges introducing a 
+	# bias into the model
 	X_Scaled = NormaliseTrainingData(X, dataDescription)
 
 	X_train, X_test, Y_train, Y_test = SplitDatasetIntoTrainAndTestSets(X_Scaled, Y, dataDescription, origDataset)
@@ -312,7 +338,7 @@ def TuneRandomForestAlgorithm(X_train, Y_train):
 	rfc = RandomForestClassifier(criterion='entropy', max_features='auto', random_state=1)
 	scoreOptions = ['accuracy','recall','precision','f1']
 	#grid_param = {'n_estimators': [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700]}
-	grid_param = {'n_estimators': [10,20]}
+	grid_param = {'n_estimators': [10,50,100,150]}
 
 	print("\n\tRunning Grid Search Cross Validation tuning..")
 
@@ -373,16 +399,27 @@ def ImplementTunedRandomForestAlgorithm(X_train, X_test, Y_train, Y_test, best_e
 	plt.ylabel("Actual class")
 	plt.show()
 	print('Confusion matrix: \n', conf_mat)
+	#print('TP: ', conf_mat[0,0])
+	#print('TN: ', conf_mat[1,1])
+	#print('FP: ', conf_mat[1,0])
+	#print('FN: ', conf_mat[0,1])
+
+	print('Confusion matrix: \n', conf_mat)
 	print('TP: ', conf_mat[1,1])
 	print('TN: ', conf_mat[0,0])
 	print('FP: ', conf_mat[0,1])
 	print('FN: ', conf_mat[1,0])
 
+	# Pause
+	anykey = input("Press any key..")
+
 
 def CreateRevisedFeatureSet(dataset):
 
 	# Selecting features with higher sifnificance and redefining feature set
-	X = dataset[['Elevation', 'Horizontal_Distance_To_Roadways', 'Horizontal_Distance_To_Fire_Points', 'Vertical_Distance_To_Hydrology', 'Horizontal_Distance_To_Hydrology','Slope','Soil_Type20','Soil_Type21','Soil_Type9','Soil_Type27','Soil_Type36']]
+	X = dataset[['Elevation', 'Horizontal_Distance_To_Roadways', 'Horizontal_Distance_To_Fire_Points', 
+			'Vertical_Distance_To_Hydrology', 'Horizontal_Distance_To_Hydrology','Slope','Soil_Type20',
+			'Soil_Type21','Soil_Type9','Soil_Type27','Soil_Type36','Soil_Type3','Soil_Type37','Soil_Type4','Soil_Type30']]
 
 	# Check for Correlation after reduced feature set created
 	CheckDatasetForCorrelation(X, "Reduced Spruce Trees Feature Set")
